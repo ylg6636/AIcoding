@@ -352,18 +352,422 @@ sh 'printenv'
 echo "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
 ```
 
-## 检查清单
+## 专注领域 (Focus Areas)
+
+本 Skill 专注于以下 Jenkins CI/CD 领域：
+
+- ✅ **Jenkins Pipeline 创建和优化** - 脚本式流水线设计与实现
+- ✅ **Jenkinsfile 语法和最佳实践** - 符合规范的语法和模式
+- ✅ **CI/CD 工作流自动化** - 自动化构建、测试、部署流程
+- ✅ **插件管理和自定义** - Jenkins 插件配置和管理
+- ✅ **构建触发器和作业调度** - Webhook、定时任务等触发方式
+- ✅ **外部工具和服务集成** - Git、Docker、Kubernetes 等集成
+- ✅ **安全和访问控制** - 凭证管理、权限配置
+- ✅ **Agent 和节点配置** - 分布式构建节点管理
+- ✅ **制品管理和归档** - 构建产物存储和版本管理
+- ✅ **监控和日志记录** - Jenkins 活动监控和日志分析
+
+## 实施方法 (Approach)
+
+### 核心原则
+
+1. **使用脚本式 Pipeline 提供灵活性**
+   - 适用于复杂逻辑和条件执行
+   - 支持完整的 Groovy 编程能力
+   - 适合需要动态决策的场景
+
+2. **将 Jenkinsfile 模块化为共享库**
+   - 提取可重用的代码片段
+   - 创建标准化函数
+   - 简化流水线维护
+
+3. **利用 Jenkins 可视化工具**
+   - 使用 Blue Ocean 查看流水线
+   - 监控构建状态和趋势
+
+4. **自动化插件更新和备份**
+   - 定期更新插件到安全版本
+   - 备份 Jenkins 配置和作业
+
+5. **使用 Jenkins 凭证管理密钥**
+   - 永不硬编码敏感信息
+   - 使用 credentials 存储密码和令牌
+
+6. **配置并行阶段提高效率**
+   - 识别可并行执行的任务
+   - 使用 parallel 步骤加速构建
+
+7. **使用 Webhook 实现事件驱动作业**
+   - Git push 触发构建
+   - PR 合并请求触发测试
+
+8. **实现构建状态通知**
+   - 邮件通知
+   - Slack/Teams 集成
+   - 构建失败告警
+
+9. **持续重构 Jenkins 作业简化**
+   - 删除废弃的作业
+   - 合并重复的流水线
+   - 优化构建步骤
+
+10. **水平扩展 Jenkins 基础设施**
+    - 添加更多构建节点
+    - 使用容器化 Agent
+    - 负载均衡构建任务
+
+## 质量检查清单 (Quality Checklist)
+
+创建或审查 Jenkinsfile 时，验证以下项目：
+
+### 语法和结构
+
+- [ ] **使用 linter 验证 Jenkinsfile 语法**
+  - 在 Jenkins UI 中使用 "Pipeline Syntax" 检查
+  - 或使用命令行工具：`jenkins-cli declarative-linter < Jenkinsfile`
+
+- [ ] **确保所有作业有适当的触发器**
+  - SCM 轮询或 Webhook
+  - 定时构建 (cron)
+  - 上游作业触发
+
+- [ ] **每个 stage 使用 node 块包装**
+  ```groovy
+  node('agent-label') {
+      stage('Stage Name') {
+          // steps
+      }
+  }
+  ```
+
+### 安全和访问控制
+
+- [ ] **定期验证访问控制策略**
+  - 检查用户权限
+  - 审查 API 令牌
+  - 验证代理通信
+
+- [ ] **升级前确认插件兼容性**
+  - 查看插件更新日志
+  - 在测试环境验证
+  - 准备回滚计划
+
+- [ ] **使用 credentials 存储敏感信息**
+  ```groovy
+  withCredentials([usernamePassword(
+      credentialsId: 'my-creds',
+      usernameVariable: 'USER',
+      passwordVariable: 'PASS'
+  )]) {
+      // use credentials
+  }
+  ```
+
+### 测试和验证
+
+- [ ] **在暂存环境测试流水线变更**
+  - 不要直接在生产环境修改
+  - 使用测试分支验证
+
+- [ ] **监控构建时间回归**
+  - 记录构建耗时
+  - 识别性能下降
+  - 优化慢速步骤
+
+### 运维和维护
+
+- [ ] **执行定期 Jenkins 备份**
+  - 配置文件：`JENKINS_HOME`
+  - 作业配置
+  - 凭证存储
+
+- [ ] **审计 Jenkins 日志查找异常活动**
+  - 登录失败
+  - 权限变更
+  - 异常 API 调用
+
+- [ ] **维护 CI/CD 流程的清晰文档**
+  - 流水线用途说明
+  - 依赖关系
+  - 故障排除步骤
+
+- [ ] **定期审查安全设置**
+  - CSRF 保护
+  - 代理配置
+  - 脚本安全
+
+## 交付物 (Output)
+
+使用本 Skill 创建的内容：
+
+- ✅ 经过验证和测试的 Jenkinsfiles
+- ✅ Jenkins 作业定义和配置
+- ✅ 自动化部署流水线
+- ✅ 安全策略文档
+- ✅ 新 Jenkins Agent 的设置指南
+- ✅ 故障排除日志和报告
+- ✅ 构建产物归档
+- ✅ Jenkins 作业性能指标
+- ✅ Jenkins 配置合规报告
+- ✅ Jenkins 平台用户文档
+
+## 常见陷阱和解决方案 (Common Pitfalls)
+
+### ⚠️ Pitfall 1: Groovy Sandbox 问题
+
+**问题**: Script Security 拒绝执行未批准的方法
+
+**解决方案**:
+```groovy
+// 使用白名单方法
+sh 'echo "approved method"'
+
+// 或在 "Manage Jenkins" → "Script Approval" 中批准签名
+// 或使用共享库中的已批准代码
+```
+
+### ⚠️ Pitfall 2: 凭证泄露
+
+**问题**: 日志中打印敏感信息
+
+**解决方案**:
+```groovy
+// ❌ 不好
+echo "Using password: ${PASSWORD}"
+
+// ✅ 好
+withCredentials([string(credentialsId: 'api-key', variable: 'KEY')]) {
+    sh 'curl -H "Authorization: Bearer $KEY" api.example.com'
+}
+```
+
+### ⚠️ Pitfall 3: 硬编码路径
+
+**问题**: 不同环境路径不同
+
+**解决方案**:
+```groovy
+// ❌ 不好
+sh '/opt/tools/build.sh'
+
+// ✅ 好
+def toolPath = env.TOOL_PATH ?: '/usr/local/bin/build.sh'
+sh "${toolPath}"
+```
+
+### ⚠️ Pitfall 4: 忘记清理资源
+
+**问题**: 工作空间填满磁盘
+
+**解决方案**:
+```groovy
+try {
+    // build steps
+} finally {
+    cleanWs()  // 清理工作空间
+}
+```
+
+### ⚠️ Pitfall 5: 并行阶段冲突
+
+**问题**: 并行任务同时写入同一资源
+
+**解决方案**:
+```groovy
+parallel(
+    "task1": {
+        lock('resource-name') {
+            // 安全访问共享资源
+        }
+    },
+    "task2": {
+        lock('resource-name') {
+            // 安全访问共享资源
+        }
+    }
+)
+```
+
+## 性能优化建议
+
+### 1. 并行化独立任务
+
+```groovy
+parallel(
+    "单元测试": { sh 'npm run test:unit' },
+    "静态分析": { sh 'npm run lint' },
+    "文档生成": { sh 'npm run docs' }
+)
+```
+
+### 2. 使用 Docker 缓存
+
+```groovy
+docker.image('node:18').inside('-v $HOME/.npm:/root/.npm') {
+    sh 'npm ci'  // 使用缓存的依赖
+}
+```
+
+### 3. 增量构建
+
+```groovy
+stage('Incremental Build') {
+    // 只构建变更的模块
+    def changedModules = sh(
+        script: 'git diff --name-only HEAD~1 | cut -d/ -f1 | sort -u',
+        returnStdout: true
+    ).trim().split('\n')
+
+    changedModules.each { module ->
+        sh "mvn install -pl ${module} -am"
+    }
+}
+```
+
+### 4. 资源清理策略
+
+```groovy
+// 定期清理旧构建
+def jobName = env.JOB_NAME
+def maxBuilds = 10
+
+sh """
+    curl -X POST "http://jenkins/job/${jobName}/[1-${maxBuilds}]/doDelete"
+"""
+```
+
+## 安全检查清单
+
+### 凭证管理
+
+- [ ] 使用 Jenkins Credentials Store
+- [ ] 定期轮换密码和令牌
+- [ ] 使用不同环境的独立凭证
+- [ ] 限制凭证的作用域
+
+### 密钥扫描
+
+```groovy
+stage('Secret Scanning') {
+    sh '''
+        # 扫描硬编码密钥
+        git log --all --full-history -S "password" --source
+        git log --all --full-history -S "api_key" --source
+    '''
+}
+```
+
+### 依赖漏洞检查
+
+```groovy
+stage('Dependency Check') {
+    sh 'npm audit'
+    sh 'snyk test'
+}
+```
+
+### 签名验证
+
+```groovy
+stage('Verify Signatures') {
+    sh 'gpg --verify file.asc file'
+}
+```
+
+### 审计日志
+
+```groovy
+stage('Audit Trail') {
+    sh '''
+        # 记录谁修改了什么
+        echo "User: ${env.BUILD_USER}"
+        echo "Changes: ${env.CHANGES}"
+    '''
+}
+```
+
+## 故障排除指南 (Troubleshooting Guide)
+
+### Pipeline 在 Build Stage 失败
+
+**检查清单**:
+1. 查看完整错误日志
+2. 验证构建节点连通性
+3. 确认依赖工具已安装
+4. 检查环境变量配置
+
+**调试命令**:
+```groovy
+node {
+    sh 'env | sort'           // 打印所有环境变量
+    sh 'which java'           // 验证工具路径
+    sh 'java -version'        // 验证工具版本
+}
+```
+
+### 插件冲突
+
+**解决方案**:
+1. 查看 [插件兼容性矩阵](https://www.jenkins.io/doc/developer/plugin-development/dependencies/)
+2. 在隔离环境测试
+3. 更新到兼容版本
+4. 使用 `jhipster:validate` 检查
+
+### 构建挂起
+
+**可能原因**:
+- 死锁或资源竞争
+- 无限循环
+- 等待用户输入
+
+**解决方案**:
+```groovy
+timeout(time: 30, unit: 'MINUTES') {
+    // 添加超时
+}
+
+// 或使用非阻塞输入
+def input = input message: 'Continue?', ok: 'Proceed'
+```
+
+### 内存不足
+
+**解决方案**:
+```groovy
+// 在节点上增加堆大小
+node('-Xmx4g') {
+    // pipeline steps
+}
+```
+
+## 检查清单总结
 
 创建新的 Jenkinsfile 时，确保：
 
+### 基础结构
 - [ ] 使用 `node {}` 包装所有内容
 - [ ] 每个 stage 有明确的名称
-- [ ] 添加错误处理（try/catch）
-- [ ] 敏感信息使用 credentials
+- [ ] 遵循项目命名规范
+
+### 错误处理
+- [ ] 添加 try/catch/finally 块
 - [ ] 长时间操作添加超时控制
 - [ ] 可重试的操作添加 retry
-- [ ] 遵循项目命名规范
+
+### 安全
+- [ ] 敏感信息使用 credentials
+- [ ] 不在日志中打印凭证
+- [ ] 定期轮换密钥
+
+### 性能
+- [ ] 识别可并行执行的任务
+- [ ] 使用缓存加速构建
+- [ ] 清理临时资源
+
+### 文档
 - [ ] 添加适当的注释
+- [ ] 维护 README 说明用途
+- [ ] 记录依赖关系
 
 ## 参考资料
 
