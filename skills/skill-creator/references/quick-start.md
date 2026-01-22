@@ -29,7 +29,7 @@
 
 ```
 skill-name/
-├── SKILL.md              # 主技能文件（必需）
+├── SKILL.md              # 主技能文件（必需，必须大写）
 ├── references/           # 参考文档（可选）
 │   ├── guide.md
 │   └── examples.md

@@ -38,12 +38,12 @@ description: 交互式引导创建新的 Claude Code Skills。提供标准化目
    自动创建以下结构：
    ```
    skill-name/
-   ├── SKILL.md
-   ├── references/
+   ├── SKILL.md             # 主技能文件（必须大写）
+   ├── references/          # 参考文档（可选）
    │   └── (可选)
-   ├── scripts/
+   ├── scripts/             # 可执行脚本（可选）
    │   └── (可选)
-   └── assets/
+   └── assets/              # 资源文件（可选）
        └── (可选)
    ```
 

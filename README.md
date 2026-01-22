@@ -7,7 +7,7 @@ AI Coding Skills - 存储 Claude Code skills 的仓库。
 ```
 skills/
 ├── skill-name/           # 具体 skill 目录
-│   ├── skill.md         # skill 的主要配置文件
+│   ├── SKILL.md         # skill 的主要配置文件（必须大写）
 │   └── references/      # 可选：参考文档和模板
 │       └── example.md
 ```
@@ -16,7 +16,7 @@ skills/
 
 每个 skill 应包含以下内容：
 
-1. **skill.md** - skill 的主文件，定义：
+1. **SKILL.md** - skill 的主文件（必须大写），定义：
    - Skill 名称和描述
    - 触发关键词
    - 配置说明
